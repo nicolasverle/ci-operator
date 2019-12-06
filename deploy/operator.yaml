@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ci-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ci-operator
+  template:
+    metadata:
+      labels:
+        name: ci-operator
+    spec:
+      serviceAccountName: ci-operator
+      containers:
+        - name: ci-operator
+          # Replace this with the built image name
+          image: REPLACE_IMAGE
+          command:
+          - ci-operator
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "ci-operator"
